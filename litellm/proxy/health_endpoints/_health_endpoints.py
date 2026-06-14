@@ -133,6 +133,7 @@ services = Union[
         "galileo",
         "newrelic",
         "sqs",
+        "tool_autoheal",
     ],
     str,
 ]
@@ -212,6 +213,7 @@ async def health_services_endpoint(  # noqa: PLR0915
             "galileo",
             "newrelic",
             "sqs",
+            "tool_autoheal",
         ]:
             raise HTTPException(
                 status_code=400,
