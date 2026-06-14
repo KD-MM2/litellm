@@ -285,6 +285,7 @@ class ToolAutoHeal(CustomLogger):
         data: dict,
         user_api_key_dict: "UserAPIKeyAuth",
         call_type: str,
+        **kwargs,
     ) -> dict | None:
         """Force non-streaming mode for tool-healing compatibility.
 
@@ -293,6 +294,9 @@ class ToolAutoHeal(CustomLogger):
         ``stream=False`` we ensure the full response is captured so that
         ``async_post_call_success_hook`` can heal it before the client
         sees it.
+
+        ``**kwargs`` absorbs additional parameters the LiteLLM framework
+        may inject (e.g. ``cache``) without breaking.
         """
         if data.get("stream"):
             data["stream"] = False
