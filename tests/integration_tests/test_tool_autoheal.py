@@ -219,3 +219,26 @@ class TestToolAutoHealCustomLogger:
             data={}, user_api_key_dict=MagicMock(), response=response
         )
         assert result is response
+
+    @pytest.mark.asyncio
+    async def test_pre_call_hook_forces_non_streaming(self):
+        from litellm.integrations.tool_autoheal import ToolAutoHeal
+
+        healer = ToolAutoHeal()
+
+        # OpenWebUI sends stream=True
+        data = {"stream": True, "model": "gpt-oss"}
+        result = await healer.async_pre_call_hook(data, None, "completion")
+        assert result is not None
+        assert result["stream"] is False
+
+    @pytest.mark.asyncio
+    async def test_pre_call_hook_passes_non_streaming(self):
+        from litellm.integrations.tool_autoheal import ToolAutoHeal
+
+        healer = ToolAutoHeal()
+
+        data = {"stream": False}
+        result = await healer.async_pre_call_hook(data, None, "completion")
+        assert result is not None
+        assert result["stream"] is False

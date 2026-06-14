@@ -280,6 +280,24 @@ class ToolAutoHeal(CustomLogger):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    async def async_pre_call_hook(
+        self,
+        data: dict,
+        user_api_key_dict: "UserAPIKeyAuth",
+        call_type: str,
+    ) -> dict | None:
+        """Force non-streaming mode for tool-healing compatibility.
+
+        OpenAI SDK's streaming parser chokes on raw XML/markup tool calls
+        (``<tool_call>``, ``<function=>``, ``<|channel|>``).  By forcing
+        ``stream=False`` we ensure the full response is captured so that
+        ``async_post_call_success_hook`` can heal it before the client
+        sees it.
+        """
+        if data.get("stream"):
+            data["stream"] = False
+        return data
+
     async def async_post_call_success_hook(
         self,
         data: dict,
