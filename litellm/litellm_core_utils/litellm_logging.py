@@ -4821,6 +4821,16 @@ def get_custom_logger_compatible_class(  # noqa: PLR0915
             for callback in _in_memory_loggers:
                 if isinstance(callback, NewRelicLogger):
                     return callback
+        elif logging_integration == "tool_autoheal":
+            from litellm.integrations.tool_autoheal import ToolAutoHeal
+
+            for callback in _in_memory_loggers:
+                if isinstance(callback, ToolAutoHeal):
+                    return callback  # type: ignore
+
+            _healer = ToolAutoHeal()
+            _in_memory_loggers.append(_healer)
+            return _healer  # type: ignore
         return None
 
     except Exception as e:

@@ -1,0 +1,23 @@
+# LiteLLM config with ToolAutoHeal callback
+# 
+# Usage:
+#   1. Start llama-server:
+#      llama-server -m gpt-oss-20b-Q4_K_M.gguf -c 16384 -fa --jinja --port 8080
+#   2. Start litellm proxy:
+#      litellm --config config_tool_autoheal.yaml --port 4000
+#   3. Connect OpenWebUI to: http://127.0.0.1:4000/v1
+
+model_list:
+  - model_name: gpt-oss-20b
+    litellm_params:
+      model: openai/gpt-oss-20b
+      api_base: http://127.0.0.1:8080/v1
+      api_key: sk-dummy
+      stream: false  # ToolAutoHeal works best with non-streaming
+
+general_settings:
+  master_key: sk-litellm-master-key
+
+litellm_settings:
+  callbacks: ["tool_autoheal"]
+  drop_params: true
